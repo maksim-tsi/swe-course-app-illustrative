@@ -1,0 +1,7 @@
+# Portable agent guidance
+
+The repository has one short always-on [AGENTS.md](../AGENTS.md), focused [skills](skills/README.md), and five [role briefs](roles/README.md). This separation keeps product invariants visible while loading specialist procedure only for relevant work. AI profiles are illustrative helpers operated by the instructor; they are not the PMO, Architect, Developer or Tester human roles in student teams, nor independent human reviewers.
+
+`.agents/skills/<name>/SKILL.md` is discovered by Codex, OpenCode and Antigravity in current documentation. `.agents/roles/` is **portable reference text**, not an automatically recognized multi-harness agent profile format. For W1, `.opencode/agents/` contains thin OpenCode-specific adapters pointing at these briefs. Codex and Antigravity can be prompted to use a role brief without inventing universal agent discovery. If GitHub Copilot is later demonstrated, `.github/agents/` would be a separate adapter; the ordinary GitHub CLI `gh` does not load AI agent profiles.
+
+The instructor assigns a bounded task to one profile at a time, inspects its diff/output, runs ordinary checks, and records the decision. Avoid multiple agents editing the same worktree concurrently. Cross-role handoff should identify changed files, requirement IDs, actual checks and unresolved questions.
