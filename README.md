@@ -25,6 +25,23 @@ No install or run command is available at this baseline. `app/` and `tests/` con
 - Use synthetic data only. No payments, notifications, real customer accounts, personal pet records, multi-branch scheduling, or production-grade availability promise.
 - A public source repository does not itself publish a running service. W5 rehearses an isolated release; W6 plans a course-accessible publication subject to a separate operational decision.
 
+## Contribution and pull requests
+
+The repository's active [Protect Main ruleset](https://github.com/maksim-tsi/swe-course-app-illustrative/rules/24012631) requires a pull request into `main`. Do not push changes directly to `main`, force-push it, or bypass the rule. Every agent working on this repository uses its **own isolated Git worktree** and a descriptive `feature/<task>` branch created from the current `origin/main`. Concurrent agents must not edit the same worktree; exchange changes through committed branches and PRs. Keep the primary `main` checkout clean.
+
+Before editing, fetch `main`, inspect the working tree, and create a worktree for the bounded task. After editing, run the checks available at that stage, inspect the diff, commit and push the feature branch, then open a PR targeting `main`. Leave the PR open for instructor review and merge. Read [AGENTS.md](AGENTS.md) for the required PR description; GitHub offers the same structure in the [PR template](.github/pull_request_template.md). AI role output is advisory and does not count as human approval.
+
+For example, from a clean primary clone, an agent can start W1 in a sibling worktree:
+
+```sh
+git fetch origin main
+git worktree add -b feature/w1-cancellation ../swe-course-app-w1-cancellation origin/main
+cd ../swe-course-app-w1-cancellation
+git status --short --branch
+```
+
+Use a fresh branch name and directory for each independent task. Inspect the branch and base before a PR; do not reuse this example name if it already exists.
+
 ## Status and history
 
 This initial commit is the **pre-W1 reading baseline**. Each workshop should leave a small traceable increment, actual check results, an instructor decision, and a stable Git revision or release marker when appropriate. Preserve history; do not rewrite an earlier stage to make the narrative look cleaner. See the [acceptance plan](docs/acceptance-plan.md).
