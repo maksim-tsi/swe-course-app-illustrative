@@ -4,7 +4,7 @@
 
 ## Instructor task
 
-1. Clone this existing repository, then create a `feature/<task>` branch in a separate Git worktree from current `origin/main` before editing. Read its README, user requirements, specification plan, test plan, acceptance plan, architecture note and this task. Identify what is planned versus implemented.
+1. Clone this existing repository, then create a `feature/<task>` branch in a separate Git worktree from current `origin/dev-max` before editing. Read its README, user requirements, specification plan, test plan, acceptance plan, architecture note and this task. Identify what is planned versus implemented.
 2. Open a bounded issue for the first increment. Write `docs/adr/0001-application-boundary.md` in class: context, modular-monolith proposal, one alternative, decision, trade-offs and timing/allocation assumptions. Until the instructor decides, keep its status proposed.
 3. Create a minimal Python package skeleton under `app/` and narrow, executable cancellation behaviour on a synthetic in-memory booking. Define results for valid cancellation, repeated cancellation, invalid input, non-owner and too-late request; rejected calls leave the entire record unchanged. This pure W1 seam does not claim SQLite durability, HTTP correctness or concurrency safety.
 4. Add ordinary tests under `tests/`, inspect the exact diff, execute them independently of agent output, and record the actual result, revision and instructor accept/revise/reject decision. Update the specification and evidence status without filling later stages.
@@ -27,4 +27,4 @@ Prioritise clone/read → ADR boundary → one bounded agent proposal → one ch
 
 ## Done when
 
-The ADR and contract agree with requirements UR-04, a small skeleton and real checks exist, and the instructor can point to the actual SHA and limitations in an open PR targeting `main`. No booking web UI, SQLite integration, release or deployment is required. [W2](W2-usable-slice.md) takes the contract into a persistent path.
+The ADR and contract agree with requirements UR-04, a small skeleton and real checks exist, and the instructor can point to the actual SHA and limitations in an open PR targeting `dev-max`. No booking web UI, SQLite integration, release or deployment is required. [W2](W2-usable-slice.md) takes the contract into a persistent path.

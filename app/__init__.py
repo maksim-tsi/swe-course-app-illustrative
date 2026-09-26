@@ -1,0 +1,1 @@
+"""Grooming Studio teaching application."""
