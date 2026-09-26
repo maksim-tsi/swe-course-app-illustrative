@@ -1,47 +1,64 @@
-# Grooming Studio — illustrative course application
+# Grooming Studio — Software Engineering II teaching example
 
-This repository is the instructor-operated example for Software Engineering II. It will evolve across six 40-minute workshops. Students study the decisions and evidence here, then apply the methods to their own Part I projects. This repository is **not** a student assignment or a required AI-tool account.
+Grooming Studio is the instructor-operated example for the Software Engineering II course at TSI. Across six workshops, we will develop a small appointment-booking application for a dog grooming studio and use its history to examine requirements, architecture decisions, implementation, testing, review, release, and maintenance. Students can inspect the decisions and evidence here, then apply the methods to **their own Part I projects**. This repository is not a student assignment or a required contribution destination.
 
-**Baseline status:** planning package only. There is no runnable application, passing test suite, ADR, deployed service, or completed workshop result yet. The instructor will create the first ADR and application skeleton during W1. Do not describe planned checks as executed results.
+> **Current state (26 September 2026): planning scaffold.** The repository contains requirements, plans, stage briefs, agent guidance, and placeholder directories. It does not yet contain a runnable application, accepted ADR, passing test suite, completed workshop result, or deployed service. The instructor will create the first ADR and application skeleton during W1. Planned checks and acceptance criteria below are not executed results.
 
-## Product in one paragraph
+## The application we will build
 
-A dog owner chooses one of four grooming services and a start time at a small studio. The application shows availability, makes a booking, and later supports cancellation and rescheduling. A booking occupies one of three groomers and one of two rooms for the entire service duration. Synthetic names and appointments keep the example safe to publish and reset. The proposed stack is Python, FastAPI, SQLite, and plain HTML/JavaScript; [the architecture note](docs/architecture.md) explains the bounded choice. The W1 ADR records the actual decision.
+A dog owner selects a grooming service and a start time, sees available appointments, and requests a booking. The application should give an unambiguous result and a booking reference. Later stages add cancellation and rescheduling. The teaching studio has **three groomers, two interchangeable rooms, and four fixed-duration services**:
 
-## Start here
+| Service | Proposed duration |
+|---|---:|
+| Bath | 30 minutes |
+| Basic Groom | 60 minutes |
+| Full Groom | 90 minutes |
+| Puppy Introduction | 30 minutes |
 
-1. Read the [user requirements](docs/requirements.md) and [architecture note](docs/architecture.md).
-2. Read the [specification plan](docs/specification-plan.md), [test plan](docs/test-plan.md), and [acceptance plan](docs/acceptance-plan.md). These plans span all six stages; later evidence is still TODO.
-3. Read the [six instructor demonstration tasks](docs/stages/README.md), starting with [W1](docs/stages/W1-initiation.md).
-4. Read [AGENTS.md](AGENTS.md) before using any coding agent. [Agent roles](.agents/README.md) and [skills](.agents/skills/README.md) explain the portable parts of the AI workflow.
+All groomers can perform every service in this simplified model. One active booking uses one groomer and one room for its entire interval. A booking must not overlap another active booking for either assigned resource. The initial requirements also call for understandable pending, success, validation, conflict, and unavailable states; a safe response to uncertain outcomes; and reproducible startup. These are [requirements](docs/requirements.md), not claims about the current implementation.
 
-No install or run command is available at this baseline. `app/` and `tests/` contain README files that identify what W1 will create. The instructor may optionally create a VM, install OpenCode, and connect a model for W1. The essential route is to clone this repository, inspect the plans, make the W1 decision and bounded change, and verify what actually happened. Tool setup is not assessed and cannot consume the engineering scope of later stages.
+The proposed architecture is a **small modular monolith**: Python and FastAPI for the HTTP API, SQLite for local persistence, and plain HTML/JavaScript for the browser client. A booking service will own domain rules while a repository module will own durable reads and writes. This choice keeps the allocation and cancellation rules visible within the course's time budget. Its trade-offs are described in the [architecture note](docs/architecture.md); the W1 [Architecture Decision Record (ADR)](docs/adr/README.md) will record the actual decision. No ADR has been accepted yet.
 
-## Delivery boundaries
+## Six workshop stages
 
-- Six stages, each at most **8 instructor engineering hours**, including implementation, checks, review, and documentation. A workshop demonstrates a bounded slice of that work within roughly 40 minutes.
-- The instructor operates the example. AI specialist profiles are assistants, not human team members or independent human reviewers. Students may discuss the evidence in class.
-- H1–H6 in the course programme remain work in students' own repositories. No homework requires OpenCode, Codex, Antigravity, GitHub CLI, or comparison between them.
-- Use synthetic data only. No payments, notifications, real customer accounts, personal pet records, multi-branch scheduling, or production-grade availability promise.
-- A public source repository does not itself publish a running service. W5 rehearses an isolated release; W6 plans a course-accessible publication subject to a separate operational decision.
+Each stage has a budget of **at most eight instructor engineering hours**, including implementation, checks, review, and documentation. A class workshop demonstrates a bounded part of that work in about 40 minutes. Each stage should leave a named revision, observed check results, known limits, and an instructor decision before the next stage builds on it.
 
-## Contribution and pull requests
+| Stage | Planned increment | What the demonstration examines |
+|---|---|---|
+| [W1 — Initiation](docs/stages/W1-initiation.md) | First ADR, cancellation contract, and application skeleton | Scope, architectural rationale, a small agent-assisted change, and human review |
+| [W2 — Usable slice](docs/stages/W2-usable-slice.md) | Browser-to-SQLite booking path and reproducible startup | Client states, resource conflicts, unavailable dependencies, safe retry, and clean setup |
+| [W3 — Tests and early release](docs/stages/W3-test-and-early-release.md) | Stronger test oracles and an early version | Boundary cases, structural checks, test sensitivity, and feedback |
+| [W4 — Feedback and rescheduling](docs/stages/W4-feedback-reschedule.md) | One feedback-driven reschedule operation | State invariants, real-store integration, and compatibility with earlier data |
+| [W5 — Operational rehearsal](docs/stages/W5-operational-release.md) | Trust-boundary checks and an isolated release | Allowed and denied actions, rollback, and data restore |
+| [W6 — Maintenance and publication](docs/stages/W6-maintenance-publication.md) | Checked maintenance change and handover | Regression, operating instructions, and a course-accessible release subject to an instructor decision |
 
-The repository's active [Protect Main ruleset](https://github.com/maksim-tsi/swe-course-app-illustrative/rules/24012631) requires a pull request into `main`. Do not push changes directly to `main`, force-push it, or bypass the rule. Every agent working on this repository uses its **own isolated Git worktree** and a descriptive `feature/<task>` branch created from the current `origin/main`. Concurrent agents must not edit the same worktree; exchange changes through committed branches and PRs. Keep the primary `main` checkout clean.
+The [stage index](docs/stages/README.md) maps workshops to lectures and suggests optional demonstration tools. GitHub CLI illustrates issue and PR evidence; it is not an AI agent harness. OpenCode, Codex, Antigravity, or another available assistant may help the instructor propose bounded changes. **No particular AI tool, account, subscription, VM, or provider is required for student homework.** Ordinary project commands and manual review remain valid routes.
 
-Before editing, fetch `main`, inspect the working tree, and create a worktree for the bounded task. After editing, run the checks available at that stage, inspect the diff, commit and push the feature branch, then open a PR targeting `main`. Leave the PR open for instructor review and merge. Read [AGENTS.md](AGENTS.md) for the required PR description; GitHub offers the same structure in the [PR template](.github/pull_request_template.md). AI role output is advisory and does not count as human approval.
-
-For example, from a clean primary clone, an agent can start W1 in a sibling worktree:
+## Start reading or following the demonstration
 
 ```sh
-git fetch origin main
-git worktree add -b feature/w1-cancellation ../swe-course-app-w1-cancellation origin/main
-cd ../swe-course-app-w1-cancellation
-git status --short --branch
+git clone https://github.com/maksim-tsi/swe-course-app-illustrative.git
+cd swe-course-app-illustrative
 ```
 
-Use a fresh branch name and directory for each independent task. Inspect the branch and base before a PR; do not reuse this example name if it already exists.
+1. Read this README. At the current planning baseline, there is no application install or run command to execute.
+2. Read the [user requirements](docs/requirements.md) and [architecture proposal](docs/architecture.md) to understand the product boundaries.
+3. Review the [specification](docs/specification-plan.md), [test](docs/test-plan.md), and [acceptance](docs/acceptance-plan.md) plans. They describe the intended six-stage coverage and distinguish planned checks from observed results.
+4. Open the [current stage brief](docs/stages/README.md) and follow the resulting commits and PRs. Check the actual revision and evidence before treating a feature as complete.
+5. If you use a coding agent, read [AGENTS.md](AGENTS.md), the portable [role briefs](.agents/roles/README.md), and [skills](.agents/skills/README.md). AI output is a proposal for instructor review, not a substitute for it.
 
-## Status and history
+The [documentation index](docs/README.md) explains the purpose of each document. The `app/` and `tests/` directories currently contain README placeholders for code and checks that later stages will create. W1 starts from this prepared scaffold. Optional VM, OpenCode, and model setup can illustrate an instructor environment, but they are not needed to read or assess the repository.
 
-This initial commit is the **pre-W1 reading baseline**. Each workshop should leave a small traceable increment, actual check results, an instructor decision, and a stable Git revision or release marker when appropriate. Preserve history; do not rewrite an earlier stage to make the narrative look cleaner. See the [acceptance plan](docs/acceptance-plan.md).
+## Evidence, safety, and scope
+
+- Use synthetic owners, pets, and appointments. Do not commit real customer data, credentials, local databases, deployment secrets, or private model transcripts.
+- Keep the example small: no payments, notifications, customer accounts, specialist groomer qualifications, multi-branch scheduling, or production-grade availability promise. The planned booking reference and ownership proof do not claim production identity management.
+- Record exact revisions, commands actually run, results, limitations, and the instructor's accept/revise/reject decision. A passing test or CI job gives bounded evidence; it cannot prove the absence of defects.
+- A public source repository does not make the application a public running service. W5 rehearses recovery in isolation. W6 publication requires a separate instructor operational decision.
+- The instructor performs the illustrative work. Student teams extend their own existing projects under the course assignments; this repository is a reference example, not a shared submission repository.
+
+## Contributing to this example
+
+The active [Protect Main ruleset](https://github.com/maksim-tsi/swe-course-app-illustrative/rules/24012631) requires a pull request into `main`. Every agent or contributor makes a bounded change in an **isolated Git worktree** on a descriptive `feature/<task>` branch from current `origin/main`. Do not edit the primary `main` checkout, push directly to `main`, force-push, or share one worktree between concurrent agents. Commit and push the feature branch, then open a PR for instructor review. [AGENTS.md](AGENTS.md) defines the required PR description; the [PR template](.github/pull_request_template.md) provides its headings. The instructor reviews and merges accepted changes.
+
+Preserve earlier stage history and describe the state that was actually observed. A workshop's timebox does not turn an unfinished acceptance criterion into a pass; see the [acceptance plan](docs/acceptance-plan.md) for the evidence expected at each handoff.
