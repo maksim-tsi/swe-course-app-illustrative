@@ -75,5 +75,6 @@ The original W1 tests compared a returned rejected booking to itself and built t
 
 - [Issue #3](https://github.com/maksim-tsi/swe-course-app-illustrative/issues/3)
 - [Original W1 pull request #4](https://github.com/maksim-tsi/swe-course-app-illustrative/pull/4)
+- [W1 verification pull request #5](https://github.com/maksim-tsi/swe-course-app-illustrative/pull/5)
 - [Proposed ADR-001](../adr/0001-application-boundary.md)
 - [W1 stage brief](W1-initiation.md)
