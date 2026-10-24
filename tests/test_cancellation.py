@@ -1,7 +1,7 @@
 """Executable examples for the W1 UR-04 cancellation seam."""
 
 import unittest
-from dataclasses import replace
+from dataclasses import asdict, replace
 
 from app.grooming import Booking, CancellationResult, cancel
 
@@ -19,17 +19,19 @@ class CancellationTests(unittest.TestCase):
         )
 
     def assert_unchanged(self, booking: Booking, result: CancellationResult, **kwargs: object) -> None:
+        before = asdict(booking)
         actual_result, after = cancel(booking, **kwargs)
         self.assertEqual(actual_result, result)
         self.assertIs(after, booking)
-        self.assertEqual(after, booking)
+        self.assertEqual(asdict(after), before)
 
     def test_owner_cancels_before_start(self) -> None:
+        before = asdict(self.booking)
         result, after = cancel(self.booking, "owner-1", 599)
         self.assertEqual(result, CancellationResult.CANCELLED)
-        self.assertEqual(after, replace(self.booking, status="cancelled"))
-        self.assertEqual(self.booking.status, "active")
+        self.assertEqual(asdict(self.booking), before)
         self.assertIsNot(after, self.booking)
+        self.assertEqual(asdict(after), {**before, "status": "cancelled"})
 
     def test_repeated_cancellation_preserves_entire_record(self) -> None:
         _, cancelled = cancel(self.booking, "owner-1", 599)
@@ -126,6 +128,19 @@ class CancellationTests(unittest.TestCase):
             actor_id="owner-1",
             now_minute=True,
         )
+
+    def test_invalid_input_precedes_forbidden_state(self) -> None:
+        for booking, now_minute in (
+            (replace(self.booking, duration_minutes=0), 599),
+            (self.booking, True),
+        ):
+            with self.subTest(booking=booking, now_minute=now_minute):
+                self.assert_unchanged(
+                    booking,
+                    CancellationResult.INVALID_INPUT,
+                    actor_id="owner-2",
+                    now_minute=now_minute,
+                )
 
     def test_missing_actor_precedes_cancelled_state(self) -> None:
         cancelled = replace(self.booking, status="cancelled")
