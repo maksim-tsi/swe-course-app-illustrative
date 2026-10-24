@@ -8,7 +8,7 @@
 
 - Integration baseline: `origin/dev-max` at `259dce7` (merge of PR #4).
 - Existing W1 implementation: `24d00b7` (`app/grooming/`, `tests/`, proposed ADR-001).
-- Verified revision: `796aa1cf671b165ff72ca4de5a39a09ae6df98ae` on `feature/w1-verification`.
+- Verified revision: `ee8b3825af3e148ee874fd05bb4b098e5ecbdc39` on `feature/w1-verification`.
 - Later commits on the verification branch add documentation only; `app/grooming/` and `tests/test_cancellation.py` are unchanged after the verified revision.
 
 ## Environment and commands
@@ -26,12 +26,15 @@ $ python3 -m compileall -q app
 $ echo $?
 0
 
-$ git diff --check
+$ git diff --check 259dce7..HEAD
+$ echo $?
+0
+
+$ git log --check --oneline 259dce7..HEAD
+(commit list, no whitespace errors)
 $ echo $?
 0
 ```
-
-The checked revision had a clean working tree before the evidence note was added.
 
 ## W1 result matrix
 
@@ -44,7 +47,7 @@ The checked revision had a clean working tree before the evidence note was added
 | `Forbidden` | Different string actor, including at/after start or on a cancelled booking | Original unchanged |
 | `TooLate` | Owner, active booking, `now_minute >= start_minute` | Original unchanged |
 
-Covered boundaries include `start_minute - 1` (successful cancellation) and `start_minute` (`TooLate`), repeated cancellation at/after start, `duration_minutes` `0` and negative, both sides of the groomer and room ranges, non-integer times, non-string actors, and validation/authorization precedence.
+Covered boundaries include `start_minute - 1` (successful cancellation) and `start_minute` (`TooLate`), repeated cancellation at `600` and `601`, non-owner calls at `599`, `600` and `601`, `duration_minutes` `0` and negative, both sides and boolean values of the groomer and room ranges, non-integer times, non-string actors, and validation/authorization precedence.
 
 ## Test-oracle change
 
@@ -58,8 +61,8 @@ The original W1 tests compared a returned rejected booking to itself and built t
 
 - ADR-001 now states the input-validation rule, non-blank identifiers, non-boolean integers, result precedence and the W1 timeline limit explicitly.
 - Negative `start_minute`/`now_minute` values remain an explicit W1 limitation; W2 must define timeline bounds.
-- No implementation defect was found in the independent backend probes. No application code changed on this branch.
-- The added tests cover validation before authorization, authorization before lateness, and authentication before cancelled state.
+- The backend review ran the committed suite and additional ad hoc probes and reported no contract violation. Those probes were not committed, so this note relies only on the committed checks above.
+- The added tests cover validation before authorization, authorization before lateness, and authentication before cancelled state. They also pin boolean rejection for every integer field and the `600`/`601` at/after-start cases.
 
 ## Limits
 
@@ -71,6 +74,6 @@ The original W1 tests compared a returned rejected booking to itself and built t
 ## References
 
 - [Issue #3](https://github.com/maksim-tsi/swe-course-app-illustrative/issues/3)
-- [W1 pull request #4](https://github.com/maksim-tsi/swe-course-app-illustrative/pull/4)
+- [Original W1 pull request #4](https://github.com/maksim-tsi/swe-course-app-illustrative/pull/4)
 - [Proposed ADR-001](../adr/0001-application-boundary.md)
 - [W1 stage brief](W1-initiation.md)
