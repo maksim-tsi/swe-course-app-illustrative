@@ -45,9 +45,13 @@ class CancellationTests(unittest.TestCase):
             replace(self.booking, id=" "),
             replace(self.booking, owner_id=""),
             replace(self.booking, start_minute=True),
+            replace(self.booking, start_minute="600"),
             replace(self.booking, duration_minutes=0),
+            replace(self.booking, duration_minutes=-60),
+            replace(self.booking, groomer_id=0),
             replace(self.booking, groomer_id=4),
             replace(self.booking, room_id=0),
+            replace(self.booking, room_id=3),
             replace(self.booking, status="pending"),
         )
         for booking in invalid:
@@ -60,7 +64,7 @@ class CancellationTests(unittest.TestCase):
                 )
 
     def test_invalid_time_preserves_record(self) -> None:
-        for now_minute in (True, "599"):
+        for now_minute in (None, True, "599", 599.5):
             with self.subTest(now_minute=now_minute):
                 self.assert_unchanged(
                     self.booking,
@@ -112,6 +116,32 @@ class CancellationTests(unittest.TestCase):
             CancellationResult.FORBIDDEN,
             actor_id="owner-2",
             now_minute=599,
+        )
+
+    def test_invalid_input_precedes_cancelled_state(self) -> None:
+        cancelled = replace(self.booking, status="cancelled")
+        self.assert_unchanged(
+            cancelled,
+            CancellationResult.INVALID_INPUT,
+            actor_id="owner-1",
+            now_minute=True,
+        )
+
+    def test_missing_actor_precedes_cancelled_state(self) -> None:
+        cancelled = replace(self.booking, status="cancelled")
+        self.assert_unchanged(
+            cancelled,
+            CancellationResult.UNAUTHENTICATED,
+            actor_id=None,
+            now_minute=599,
+        )
+
+    def test_other_actor_precedes_too_late_state(self) -> None:
+        self.assert_unchanged(
+            self.booking,
+            CancellationResult.FORBIDDEN,
+            actor_id="owner-2",
+            now_minute=600,
         )
 
 
