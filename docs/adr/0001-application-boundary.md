@@ -6,6 +6,8 @@
 
 **Requirement:** UR-04; later allocation constraints support UR-01–UR-03
 
+**Revision:** 24 October 2026 — clarified W1 input validation and cancellation result precedence; status remains Proposed.
+
 ## Context and quality risk
 
 Grooming Studio needs an understandable booking path and a cancellation rule that never releases capacity twice. The pre-W1 baseline is documentation only. The teaching scope has three groomers, two interchangeable rooms and four fixed-duration services. An early split into separately deployed components would make state changes and failure handling harder to inspect within the workshop budget.
@@ -14,7 +16,7 @@ Grooming Studio needs an understandable booking path and a cancellation rule tha
 
 Use a small modular monolith: a plain browser client calls narrow FastAPI handlers; domain services own booking rules; a SQLite repository owns durable transactions. Dependencies flow from client to handler to domain service to repository. W1 establishes only a pure, in-memory cancellation seam. W2 will decide the HTTP and storage representation and verify transaction behaviour; this ADR does not claim either exists now.
 
-The W1 seam accepts a synthetic immutable booking with `id`, `owner_id`, integer `start_minute`, positive integer `duration_minutes`, `groomer_id` in 1–3, `room_id` in 1–2 and `status` of `active` or `cancelled`. `now_minute` is an integer on the same teaching timeline, with no date or time-zone conversion. Invalid booking/time values return `InvalidInput` before authorization or state checks. Missing actor returns `Unauthenticated`; another actor returns `Forbidden`. For the owner, an already cancelled booking returns `AlreadyCancelled`, an active booking at or after its start returns `TooLate`, and an active booking before its start returns `Cancelled` with only `status` changed. Every non-success outcome returns the original whole booking value.
+The W1 seam accepts a synthetic immutable booking with `id`, `owner_id`, integer `start_minute`, positive integer `duration_minutes`, `groomer_id` in 1–3, `room_id` in 1–2 and `status` of `active` or `cancelled`. `now_minute` is an integer on the same teaching timeline, with no date or time-zone conversion. The complete input is validated before authorization or state checks: malformed booking fields, a non-integer `now_minute`, or an actor that is neither missing nor a string return `InvalidInput`. A missing or blank actor returns `Unauthenticated`; a different string actor returns `Forbidden`. For the owner, result precedence is `AlreadyCancelled` before `TooLate`: an already cancelled booking returns `AlreadyCancelled` even at or after its start, an active booking at or after its start returns `TooLate`, and an active booking before its start returns `Cancelled` with only `status` changed. Every non-success outcome returns the original whole booking value.
 
 For future allocation, represent occupied intervals as half-open `[start, start + duration)`. Adjacent intervals can meet at an endpoint without overlap. Among free groomer-room pairs, choose the first in ascending `(groomer_id, room_id)` order; W2 must recheck availability at the write boundary. One active booking occupies one groomer and one room for its entire interval. No global occupancy counter is part of the W1 seam.
 
