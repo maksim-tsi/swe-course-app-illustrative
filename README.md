@@ -2,7 +2,7 @@
 
 Grooming Studio is the instructor-operated example for the Software Engineering II course at TSI. Across six workshops, we will develop a small appointment-booking application for a dog grooming studio and use its history to examine requirements, architecture decisions, implementation, testing, review, release, and maintenance. Students can inspect the decisions and evidence here, then apply the methods to **their own Part I projects**. This repository is not a student assignment or a required contribution destination.
 
-> **Current state (26 September 2026): W1 candidate under review.** The repository contains requirements, plans, stage briefs, agent guidance, a proposed ADR and a pure in-memory cancellation seam with ordinary unit checks. It does not yet contain a runnable application, accepted ADR, completed workshop result or deployed service. The W1 pull request records observed check results; the instructor's decision remains pending. Planned later-stage checks below are not executed results.
+> **Current state (24 October 2026): W1 verification evidence recorded; instructor decision pending.** The repository contains requirements, plans, stage briefs, agent guidance, a proposed ADR and a pure in-memory cancellation seam with standard-library unit checks. The [W1 verification evidence](docs/stages/W1-evidence.md) records the tested revision, commands and limits. It does not yet contain a runnable application, accepted ADR, completed workshop result or deployed service. The instructor's accept/revise/reject decision remains pending. Planned later-stage checks below are not executed results.
 
 ## The application we will build
 
